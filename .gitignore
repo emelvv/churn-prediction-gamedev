@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.python-version
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+
+# ML artifacts
+artifacts/
+catboost_info/
+*.cbm
+*.bin
+*.pkl
+*.joblib
+*.onnx
+
+# Data files
+/data/
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.h5
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Docker local overrides
+.dockerignore
