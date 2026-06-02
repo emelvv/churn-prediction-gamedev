@@ -1,7 +1,14 @@
 import json
 
 from catboost import CatBoostClassifier
-from sklearn.metrics import precision_recall_curve, roc_auc_score
+from sklearn.metrics import (
+    average_precision_score,
+    f1_score,
+    precision_recall_curve,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+)
 from sklearn.model_selection import train_test_split
 
 from config.settings import (
@@ -66,15 +73,32 @@ def train_and_save_model() -> dict:
     valid_probabilities = model.predict_proba(X_valid)[:, 1]
     test_probabilities = model.predict_proba(X_test)[:, 1]
     threshold_info = find_best_threshold(y_valid, valid_probabilities)
+    test_predictions = (test_probabilities >= threshold_info["threshold"]).astype(int)
 
     metadata = {
         "features": FEATURES,
+        "dataset_rows": int(len(df)),
+        "target_share": float(y.mean()),
+        "train_rows": int(len(X_train)),
+        "validation_rows": int(len(X_valid)),
+        "test_rows": int(len(X_test)),
+        "validation_scheme": {
+            "train_test_split": TRAIN_TEST_SPLIT,
+            "validation_split_from_train": VALIDATION_SPLIT,
+            "stratified_by_target": True,
+            "random_state": RANDOM_STATE,
+        },
         "decision_threshold": threshold_info["threshold"],
         "validation_f1": threshold_info["f1"],
         "validation_precision": threshold_info["precision"],
         "validation_recall": threshold_info["recall"],
         "validation_auc": float(roc_auc_score(y_valid, valid_probabilities)),
+        "validation_pr_auc": float(average_precision_score(y_valid, valid_probabilities)),
         "test_auc": float(roc_auc_score(y_test, test_probabilities)),
+        "test_pr_auc": float(average_precision_score(y_test, test_probabilities)),
+        "test_precision": float(precision_score(y_test, test_predictions)),
+        "test_recall": float(recall_score(y_test, test_predictions)),
+        "test_f1": float(f1_score(y_test, test_predictions)),
         "catboost_params": CATBOOST_PARAMS,
     }
 
